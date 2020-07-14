@@ -4,6 +4,7 @@ import cookieSession from 'cookie-session'
 // import router from './router'
 // 使用控制器中运用修饰器生成的router
 import './controller/LoginController'
+import './controller/CrowllerController'
 import { router } from './controller/decorator'
 
 const app = express()
