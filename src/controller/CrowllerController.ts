@@ -16,11 +16,17 @@ interface BodyRequest extends Request {
 const checkLogin = (req: Request, res: Response, next: NextFunction): void => {
   // isLogin: any -> boolean
   const isLogin = !!(req.session ? req.session.login : false)
+  console.log('checkLogin middleware')
   if (isLogin) {
     next()
   } else {
     res.json(getResponseData(null, '请先登录'))
   }
+}
+
+const test = (req: Request, res: Response, next: NextFunction): void => {
+  console.log('test middleware')
+  next()
 }
 
 // @controller('/abc') // localhost:7001/abc/showData
@@ -37,6 +43,8 @@ export class CrowllerController {
   }
 
   @get('/showData')
+  // 'middleware'元数据会被覆盖
+  @use(test)
   @use(checkLogin)
   showData(req: BodyRequest, res: Response): void{
     try {
