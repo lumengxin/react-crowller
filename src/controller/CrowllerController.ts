@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import {Request, Response, NextFunction} from 'express'
 import fs from 'fs'
 import path from 'path'
-import {controller, get, use} from './decorator'
+import {controller, use, get} from '../decorator'
 import {getResponseData} from '../utils/util'
 import Crowller from '../crowller'
 import BaiduAnalytics from '../analyzer/baiduAnalyzer'
@@ -13,8 +13,9 @@ interface BodyRequest extends Request {
   }
 }
 
-const checkLogin = (req: Request, res: Response, next: NextFunction) => {
-  const isLogin = req.session ? req.session.login : false
+const checkLogin = (req: Request, res: Response, next: NextFunction): void => {
+  // isLogin: any -> boolean
+  const isLogin = !!(req.session ? req.session.login : false)
   if (isLogin) {
     next()
   } else {
@@ -22,12 +23,13 @@ const checkLogin = (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-@controller
-class CrowllerController {
+// @controller('/abc') // localhost:7001/abc/showData
+@controller('/')
+export class CrowllerController {
 
   @get('/getData')
   @use(checkLogin)
-  getData(req: BodyRequest, res: Response) {
+  getData(req: BodyRequest, res: Response): void {
     const url = `http://www.baidu.com/`
     const baiduAnalyzer = BaiduAnalytics.getInstance()
     new Crowller(url, baiduAnalyzer)
@@ -36,7 +38,7 @@ class CrowllerController {
 
   @get('/showData')
   @use(checkLogin)
-  showData(req: BodyRequest, res: Response) {
+  showData(req: BodyRequest, res: Response): void{
     try {
       const position = path.resolve(__dirname, '../../data/course.json')
       const result = fs.readFileSync(position, 'utf8')
