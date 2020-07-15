@@ -30,7 +30,7 @@ const test = (req: Request, res: Response, next: NextFunction): void => {
 }
 
 // @controller('/abc') // localhost:7001/abc/showData
-@controller('/')
+@controller('/api')
 export class CrowllerController {
 
   @get('/getData')

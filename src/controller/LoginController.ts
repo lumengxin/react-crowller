@@ -9,7 +9,7 @@ interface BodyRequest extends Request {
   }
 }
 
-@controller('/')
+@controller('/api')
 export class LoginController {
   // isLogin(req: BodyRequest): boolean {
   //   return !!(req.session ? req.session.login : false)
@@ -18,16 +18,23 @@ export class LoginController {
     return !!(req.session ? req.session.login : false)
   }
 
+  @get('/isLogin')
+  isLogin(req: BodyRequest, res: Response): void {
+    const isLogin = LoginController.isLogin(req)
+    res.json(getResponseData(isLogin))
+  }
+
   @post('/login')
   login(req: BodyRequest, res: Response): void{
-    const {password} =req.body
+    const {password} = req.body
     // const isLogin = !!(req.session ? req.session.login : false)
     // :'isLogin' of undefined. 类未被实例化，this指向不对
     // const isLogin = this.isLogin(req)
     const isLogin = LoginController.isLogin(req)
 
-    if (isLogin) {
-      res.json(getResponseData(false, '已经登录过'))
+    if (isLogin && password === '123') {
+      // res.json(getResponseData(false, '已经登录过'))
+      res.json(getResponseData(true))
     } else {
       if (password === '123' && req.session) {
         req.session.login = true
@@ -54,9 +61,9 @@ export class LoginController {
       res.send(`
         <html>
           <body>
-            <a href="/getData">爬取数据</a>
-            <a href="/showData">展示数据</a>
-            <a href="/logout">退出</a>
+            <a href="/api/getData">爬取数据</a>
+            <a href="/api/showData">展示数据</a>
+            <a href="/api/logout">退出</a>
           </body>
         </html>
       `)
